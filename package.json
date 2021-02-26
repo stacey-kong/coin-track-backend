@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "devstart": "nodemon ./bin/www",
+    "serverstart": "DEBUG=My_Backend:* yarn run devstart"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
@@ -17,6 +19,7 @@
     "mongoose": "^5.11.17",
     "morgan": "~1.9.1"
   },
+  "devDependencies": {
     "nodemon": "^2.0.7"
   }
 }
