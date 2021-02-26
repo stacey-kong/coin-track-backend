@@ -1,41 +1,45 @@
-const createError = require('http-errors');
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
-const mongoose = require("mongoose")
-const path = require('path');
+const createError = require("http-errors");
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
+const mongoose = require("mongoose");
+const path = require("path");
 
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const indexRouter = require("./routes/index");
+const usersRouter = require("./routes/users");
 
 const app = express();
-const  dbURI = "mongodb://localhost/authentication"
+const dbURI = "mongodb+srv://dbStacey:Db123456@cluster0.sq0s8.mongodb.net/coin?retryWrites=true&w=majority";
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "jade");
 
-app.use(logger('dev'));
+app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
+mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
+const db = mongoose.connection;
 
-mongoose.connect(dbURI , {useNewUrlParser: true, useUnifiedTopology: true})
-const db = mongoose.connection
+db.on("error", (err) => {
+  console.error(err);
+});
+db.once("open", () => {
+  console.log("DB started successfully");
+});
 
-db.on("error", (err)=>{console.error(err)})
-db.once("open", () => {console.log("DB started successfully")})
+app.listen(9010, () => {
+  console.log("Hello server 9010");
+});
 
-app.listen(9010, () => {console.log("Hello server 9010")})
-
-
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// app.use('/', indexRouter);
+app.use("/users", usersRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
