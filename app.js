@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const path = require("path");
 
 const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
+const authRouter = require("./routes/auth");
 
 const app = express();
 const dbURI = "mongodb+srv://dbStacey:Db123456@cluster0.sq0s8.mongodb.net/coin?retryWrites=true&w=majority";
@@ -36,7 +36,7 @@ app.listen(9010, () => {
 });
 
 // app.use('/', indexRouter);
-app.use("/users", usersRouter);
+app.use("/api/auth", authRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
