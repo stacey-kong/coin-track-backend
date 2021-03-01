@@ -15,3 +15,6 @@ const verificationSchema = new mongoose.Schema({
     maxlength: 255,
   },
 });
+
+
+module.exports = mongoose.model("Verification", verificationSchema);

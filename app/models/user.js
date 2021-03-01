@@ -5,8 +5,8 @@ const model = mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    minlength: 5,
-    maxlength: 255,
+    minlength: 1,
+    maxlength: 10,
   },
   password: {
     type: String,

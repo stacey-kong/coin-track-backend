@@ -1,9 +1,9 @@
 const { success, error, validation } = require("../../helpers/responseApi");
 const { randomString } = require("../../helpers/common");
 const { validationResult } = require("express-validator");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../../models/User");
+const User = require("../../models/user");
 const Verification = require("../../models/verification");
 
 /**
@@ -29,7 +29,7 @@ exports.register = async (req, res) => {
         .json(validation({ msg: "Username already registered" }));
 
     let newUser = new User({
-      Username: Username.toLowerCase().replace(/\s+/, ""),
+      username: username.toLowerCase().replace(/\s+/, ""),
       password,
     });
 
