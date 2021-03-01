@@ -5,11 +5,12 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../../models/user");
 const Verification = require("../../models/verification");
+const config = require("config");
 
 /**
  * @desc    Register a new user
  * @method  POST api/auth/register
- * @access  public 
+ * @access  public
  */
 exports.register = async (req, res) => {
   // Validation
@@ -53,7 +54,7 @@ exports.register = async (req, res) => {
     // Send the response to server
     res.status(201).json(
       success(
-        "Register success, please activate your account.",
+        "Register success, please contact admin to activate your account.",
         {
           user: {
             id: newUser._id,
@@ -67,6 +68,71 @@ exports.register = async (req, res) => {
     );
   } catch (err) {
     console.error(err.message);
+    res.status(500).json(error("Server error", res.statusCode));
+  }
+};
+
+/**
+ * @desc    Login a user
+ * @method  POST api/auth/login
+ * @access  public
+ */
+exports.login = async (req, res) => {
+  // Validation
+  const errors = validationResult(req);
+  if (!errors.isEmpty())
+    return res.status(422).json(validation(errors.array()));
+
+  const { username, password } = req.body;
+
+  try {
+    const user = await User.findOne({ username });
+
+    // Check the username
+    // If there's not exists
+    // Throw the error
+    if (!user)
+      return res
+        .status(422)
+        .json(validation("Not a exsiting user or the password is not correct"));
+
+    // Check the password
+    let checkPassword = await bcrypt.compare(password, user.password);
+    if (!checkPassword)
+      return res
+        .status(422)
+        .json(validation("Not a exsiting user or the password is not correct"));
+
+    // Check user if not activated yet
+    // If not activated, send error response
+    if (user && !user.verified)
+      return res
+        .status(400)
+        .json(error("Your account is not active yet.", res.statusCode));
+
+    // If the requirement above pass
+    // Lets send the response with JWT token in it
+    const payload = {
+      user: {
+        id: user._id,
+        username: user.username,
+      },
+    };
+
+    jwt.sign(
+      payload,
+      config.get("jwtSecret"),
+      { expiresIn: 86400 },
+      (err, token) => {
+        if (err) throw err;
+
+        res
+          .status(200)
+          .json(success("Login success", { token }, res.statusCode));
+      }
+    );
+  } catch (err) {
+    console.log(err.message);
     res.status(500).json(error("Server error", res.statusCode));
   }
 };
