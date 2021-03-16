@@ -8,6 +8,7 @@
     "serverstart": "DEBUG=My_Backend:* yarn run devstart"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "bcrypt": "^5.0.0",
     "config": "^3.3.4",
     "cookie-parser": "~1.4.4",
