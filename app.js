@@ -8,6 +8,7 @@ const path = require("path");
 
 const indexRouter = require("./routes/index");
 const authRouter = require("./routes/auth");
+const coinRouter = require("./routes/coin");
 
 const app = express();
 const dbURI =
@@ -40,6 +41,7 @@ app.listen(9010, () => {
 
 // app.use('/', indexRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/coin", coinRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
