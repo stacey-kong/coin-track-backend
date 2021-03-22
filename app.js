@@ -10,7 +10,20 @@ const indexRouter = require("./routes/index");
 const authRouter = require("./routes/auth");
 const coinRouter = require("./routes/coin");
 
+const { priceList } = require("./pushCoinPrice");
+
+// implement the server with socket.io
 const app = express();
+const httpServer = require("http").createServer(app);
+const io = require("socket.io")(httpServer, {
+  cors: {
+    origin: "http://localhost:9009",
+    methods: ["GET", "POST"],
+  },
+});
+
+httpServer.listen(9010);
+
 const dbURI =
   "mongodb+srv://dbStacey:Db123456@cluster0.sq0s8.mongodb.net/coin?retryWrites=true&w=majority";
 
@@ -35,10 +48,6 @@ db.once("open", () => {
   console.log("DB started successfully");
 });
 
-app.listen(9010, () => {
-  console.log("Hello server 9010");
-});
-
 // app.use('/', indexRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/coin", coinRouter);
@@ -58,5 +67,14 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render("error");
 });
+
+async function pushData() {
+  const List = await priceList();
+  console.log(List);
+  io.emit("coinprice", List);
+}
+// pushData();
+
+setInterval(pushData, 4000);
 
 module.exports = app;
