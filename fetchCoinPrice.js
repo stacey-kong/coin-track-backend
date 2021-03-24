@@ -81,6 +81,6 @@ async function updateCoinPrice() {
 }
 
 function run() {
-  setInterval(updateCoinPrice, 5000);
+  setInterval(updateCoinPrice, 1000);
 }
 run();

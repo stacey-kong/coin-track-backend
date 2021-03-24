@@ -1,6 +1,6 @@
-const CoinInstance = require("./app/models/coininstance");
-const Coin = require("./app/models/coin");
-const coin = require("./app/models/coin");
+const CoinInstance = require("../app/models/coininstance");
+const Coin = require("../app/models/coin");
+const coin = require("../app/models/coin");
 
 exports.binancePriceList = async function () {
   let ftxPriceList;
@@ -62,9 +62,10 @@ exports.averagePriceList = async function () {
         }).then((res) => {
           return res.price;
         });
+        let price = (ftxPrice + binancePrice) / 2;
         let data = {
           name: docs[i].name,
-          price: (ftxPrice + binancePrice) / 2,
+          price: price > 1 ? price.toFixed(2) : price.toFixed(4),
         };
         // console.log(data);
         priceList.push(data);

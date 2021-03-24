@@ -1,31 +1,29 @@
 const createError = require("http-errors");
-const express = require("express");
 const cookieParser = require("cookie-parser");
-const cors = require("cors");
 const logger = require("morgan");
 const mongoose = require("mongoose");
 const path = require("path");
 
-const indexRouter = require("./routes/index");
 const authRouter = require("./routes/auth");
 const coinRouter = require("./routes/coin");
 
-const { priceList } = require("./pushCoinPrice");
-
 // implement the server with socket.io
+const { socker } = require("./socket/sockerController");
+const express = require("express");
+const http = require("http");
+
 const app = express();
-const httpServer = require("http").createServer(app);
-const io = require("socket.io")(httpServer, {
-  cors: {
-    origin: "http://localhost:9009",
-    methods: ["GET", "POST"],
-  },
+const server = new http.Server(app);
+socker(server);
+
+app.listen(9010, () => {
+  console.log(`Api listening on port 9010!`);
 });
 
-httpServer.listen(9010);
-
-const dbURI =
-  "mongodb+srv://dbStacey:Db123456@cluster0.sq0s8.mongodb.net/coin?retryWrites=true&w=majority";
+server.listen(9011, () => {
+  console.log(`Socker listening on port 9011!`);
+  // logger.info(`Api and socker whitelisted for ${host}`);
+});
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -36,8 +34,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-app.use(cors());
+// app.use(cors());
 
+// connect to mongoDB
+const dbURI =
+  "mongodb+srv://dbStacey:Db123456@cluster0.sq0s8.mongodb.net/coin?retryWrites=true&w=majority";
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 
@@ -48,7 +49,7 @@ db.once("open", () => {
   console.log("DB started successfully");
 });
 
-// app.use('/', indexRouter);
+// expose route
 app.use("/api/auth", authRouter);
 app.use("/api/coin", coinRouter);
 
@@ -67,14 +68,5 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render("error");
 });
-
-async function pushData() {
-  const List = await priceList();
-  console.log(List);
-  io.emit("coinprice", List);
-}
-// pushData();
-
-setInterval(pushData, 4000);
 
 module.exports = app;
