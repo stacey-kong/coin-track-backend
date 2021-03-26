@@ -1,6 +1,7 @@
 const CoinInstance = require("../app/models/coininstance");
 const Coin = require("../app/models/coin");
 const coin = require("../app/models/coin");
+const { price } = require("../app/controllers/api/coinController");
 
 exports.binancePriceList = async function () {
   let ftxPriceList;
@@ -65,6 +66,7 @@ exports.averagePriceList = async function () {
         let price = (ftxPrice + binancePrice) / 2;
         let data = {
           name: docs[i].name,
+          abbreviation: docs[i].abbreviation,
           price: price > 1 ? price.toFixed(2) : price.toFixed(4),
         };
         // console.log(data);
@@ -74,4 +76,27 @@ exports.averagePriceList = async function () {
     })
     .catch((err) => console.log(err));
   return averagePrice;
+};
+
+exports.checkCoinprice = async function (coin) {
+  const id = await Coin.findOne({ abbreviation: coin })
+    .then((coin) => {
+      return coin._id;
+    })
+    .catch((err) => console.log(err));
+  const coinprice = await CoinInstance.find({ coin: id }).then((prices) => {
+    let list = [];
+    for (let i = 0; i < prices.length; i++) {
+      let price = prices[i];
+      let data = {
+        exchange: price.exchange,
+        price: price.price,
+        historyHigh: price.historyHigh,
+        historyLow: price.historyLow,
+      };
+      list.push(data)
+    }
+    return list;
+  });
+  return coinprice;
 };
