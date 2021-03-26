@@ -1,9 +1,9 @@
 var async = require("async");
-var Coin = require("./app/models/coin");
-var CoinInstance = require("./app/models/coininstance");
+var Coin = require("../app/models/coin");
+var CoinInstance = require("../app/models/coininstance");
 
 var mongoose = require("mongoose");
-const coininstance = require("./app/models/coininstance");
+const coininstance = require("../app/models/coininstance");
 var mongoDB =
   "mongodb+srv://dbStacey:Db123456@cluster0.sq0s8.mongodb.net/coin?retryWrites=true&w=majority";
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -36,13 +36,23 @@ function coinInstanceCreate(coin, exchange) {
   coinInstance.save();
 }
 
-coinCreate("Bitcoin", "BTC");
+// coinCreate("Bitcoin", "BTC");
 
-coinCreate("Ethereum", "ETH");
+// coinCreate("Ethereum", "ETH");
 
-coinCreate("FTX Token", "FTT");
+// coinCreate("FTX Token", "FTT");
 
-coinCreate("LINA", "LINA");
+// coinCreate("LINA", "LINA");
+coinCreate("Polkadot", "DOT");
+coinCreate("Tether", "USDT");
+coinCreate("Binance Coin", "BNB");
+coinCreate("Uniswap", "UNI");
+coinCreate("Bitcoin Cash", "BCH");
+coinCreate("Dogecoin", "DOGE");
+coinCreate("TORN", "TRX");
+coinCreate("EOS", "EOS");
+coinCreate("Synthetix", "SNX");
+coinCreate("Convergence", "CONV");
 
 coins.forEach((coin) => {
   exchanges.forEach((exchange) => {

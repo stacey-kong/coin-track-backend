@@ -1,9 +1,9 @@
-const CoinInstance = require("./app/models/coininstance");
-const Coin = require("./app/models/coin");
+const CoinInstance = require("../app/models/coininstance");
+const Coin = require("../app/models/coin");
 const axios = require("axios");
 
 var mongoose = require("mongoose");
-const coininstance = require("./app/models/coininstance");
+const coininstance = require("../app/models/coininstance");
 const { response } = require("express");
 var mongoDB =
   "mongodb+srv://dbStacey:Db123456@cluster0.sq0s8.mongodb.net/coin?retryWrites=true&w=majority";
