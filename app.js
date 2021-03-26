@@ -3,6 +3,7 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const mongoose = require("mongoose");
 const path = require("path");
+const cors = require("cors");
 
 const authRouter = require("./routes/auth");
 const coinRouter = require("./routes/coin");
@@ -34,7 +35,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-// app.use(cors());
+app.use(cors());
 
 // connect to mongoDB
 const dbURI =
