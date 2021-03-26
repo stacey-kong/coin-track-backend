@@ -7,9 +7,10 @@ const {
 } = require("./renderPrice");
 
 module.exports = async (io, socket) => {
-  const pushAveragePrice = () => {
+  const pushAveragePrice = (payload) => {
+    const subscription = payload;
     const pushAveragePriceOnce = async () => {
-      const averageprice = await averagePriceList();
+      const averageprice = await averagePriceList(payload);
       socket.emit("allPrice", averageprice);
     };
     setInterval(pushAveragePriceOnce, 3000);
@@ -23,7 +24,10 @@ module.exports = async (io, socket) => {
     // pushCoinPriceOnce()
     setInterval(pushCoinPriceOnce, 3000);
   };
-  socket.on("averageprice", pushAveragePrice);
+  socket.on("averageprice", (payload) => {
+    console.log(payload);
+    pushAveragePrice(payload);
+  });
   socket.on("coinprice", (data) => {
     console.log(data);
     pushCoinPrice(data);

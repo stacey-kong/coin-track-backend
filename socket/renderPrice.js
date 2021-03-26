@@ -2,6 +2,14 @@ const CoinInstance = require("../app/models/coininstance");
 const Coin = require("../app/models/coin");
 const coin = require("../app/models/coin");
 const { price } = require("../app/controllers/api/coinController");
+const Subscription = require("../app/models/subscription");
+
+const getUserSubscription = async function (user) {
+  userSubscription = await Subscription.findOne({ user: user }).then((data) => {
+    return data.subscription;
+  });
+  return userSubscription;
+};
 
 exports.binancePriceList = async function () {
   let ftxPriceList;
@@ -45,9 +53,10 @@ exports.ftxPriceList = async function () {
   return ftxPriceList;
 };
 
-exports.averagePriceList = async function () {
+exports.averagePriceList = async function (userId) {
   let averagePrice;
-  averagePrice = await Coin.find({})
+  const subscribedCoin = await getUserSubscription(userId);
+  averagePrice = await Coin.find({abbreviation:subscribedCoin})
     .then(async (docs) => {
       let priceList = [];
       for (let i = 0; i < docs.length; i++) {
@@ -94,7 +103,7 @@ exports.checkCoinprice = async function (coin) {
         historyHigh: price.historyHigh,
         historyLow: price.historyLow,
       };
-      list.push(data)
+      list.push(data);
     }
     return list;
   });

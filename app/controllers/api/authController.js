@@ -128,7 +128,13 @@ exports.login = async (req, res) => {
 
         res
           .status(200)
-          .json(success("Login success", { token }, res.statusCode));
+          .json(
+            success(
+              "Login success",
+              { token, userId: payload.user.id },
+              res.statusCode
+            )
+          );
       }
     );
   } catch (err) {
