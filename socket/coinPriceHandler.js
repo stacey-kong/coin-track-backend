@@ -8,7 +8,6 @@ const {
 
 module.exports = async (io, socket) => {
   const pushAveragePrice = (payload) => {
-    const subscription = payload;
     const pushAveragePriceOnce = async () => {
       const averageprice = await averagePriceList(payload);
       socket.emit("allPrice", averageprice);
