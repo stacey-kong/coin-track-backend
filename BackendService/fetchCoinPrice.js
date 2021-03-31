@@ -3,8 +3,6 @@ const Coin = require("../app/models/coin");
 const axios = require("axios");
 
 var mongoose = require("mongoose");
-const coininstance = require("../app/models/coininstance");
-const { response } = require("express");
 var mongoDB =
   "mongodb+srv://dbStacey:Db123456@cluster0.sq0s8.mongodb.net/coin?retryWrites=true&w=majority";
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -17,22 +15,40 @@ const binanceApi = "https://api1.binance.com/api/v3/ticker/price?symbol=";
 
 async function updateFTXCoinPrice() {
   await Coin.find({}, function (err, doc) {
-    let price;
-    doc.forEach((coin) => {
-      const api = `${ftxApi}${coin.abbreviation}/USD`;
+    doc.forEach(async (coin) => {
+      const tryGetPriceFromApi = async () => {
+        let price;
+        let marketPrice = await axios
+          .get(`${ftxApi}${coin.abbreviation}/USD`)
+          .then((res) => {
+            return res.data.result.price;
+          })
+          .catch((err) => console.log(err));
+        let perpPrice = await axios
+          .get(`${ftxApi}${coin.abbreviation}-PERP`)
+          .then((res) => {
+            return res.data.result.price;
+          })
+          .catch((err) => console.log(err));
+        if (marketPrice) {
+          price = marketPrice;
+        } else if (perpPrice) {
+          price = perpPrice;
+        }
+        return price;
+      };
+
+      const price = await tryGetPriceFromApi();
       const query = { coin: coin._id, exchange: "FTX" };
-      axios
-        .get(api)
-        .then(async (response) => {
-          price = response.data.result.price;
-          await CoinInstance.findOneAndUpdate(query, {
-            price: price,
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      if (price) {
+        await CoinInstance.findOneAndUpdate(query, {
+          price: price,
+        }).catch((err) => console.log(err));
+      }
     });
+  }).catch((error) => {
+    console.log(error);
+    return;
   });
 }
 
@@ -72,6 +88,9 @@ async function updateBinanceCoinPrice() {
           });
       }
     });
+  }).catch((error) => {
+    console.log(error);
+    return;
   });
 }
 
