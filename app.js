@@ -42,6 +42,8 @@ const dbURI =
   "mongodb+srv://dbStacey:Db123456@cluster0.sq0s8.mongodb.net/coin?retryWrites=true&w=majority";
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
+// force findand{dosth} series to use it original function in mongodb
+mongoose.set('useFindAndModify', false);
 
 db.on("error", (err) => {
   console.error(err);

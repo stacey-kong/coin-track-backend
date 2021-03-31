@@ -1,15 +1,7 @@
 const CoinInstance = require("../app/models/coininstance");
 const Coin = require("../app/models/coin");
-const coin = require("../app/models/coin");
-const { price } = require("../app/controllers/api/coinController");
-const Subscription = require("../app/models/subscription");
+const {getUserSubscription} =require("./renderSubscription")
 
-const getUserSubscription = async function (user) {
-  userSubscription = await Subscription.findOne({ user: user }).then((data) => {
-    return data.subscription;
-  });
-  return userSubscription;
-};
 
 exports.binancePriceList = async function () {
   let ftxPriceList;
