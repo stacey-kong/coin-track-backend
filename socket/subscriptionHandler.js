@@ -16,6 +16,7 @@ module.exports = async (io, socket) => {
   });
   socket.on("addScription", (userId, coin) => {
     console.log(`userId:${userId},coin:${coin}`);
+    if (!coin) return;
     addScription(userId, coin);
   });
 };
