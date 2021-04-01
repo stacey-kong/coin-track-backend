@@ -1,7 +1,6 @@
 const CoinInstance = require("../app/models/coininstance");
 const Coin = require("../app/models/coin");
-const {getUserSubscription} =require("./renderSubscription")
-
+const { getUserSubscription } = require("./renderSubscription");
 
 exports.binancePriceList = async function () {
   let ftxPriceList;
@@ -48,7 +47,7 @@ exports.ftxPriceList = async function () {
 exports.averagePriceList = async function (userId) {
   let averagePrice;
   const subscribedCoin = await getUserSubscription(userId);
-  averagePrice = await Coin.find({abbreviation:subscribedCoin})
+  averagePrice = await Coin.find({ abbreviation: subscribedCoin })
     .then(async (docs) => {
       let priceList = [];
       for (let i = 0; i < docs.length; i++) {
@@ -64,7 +63,16 @@ exports.averagePriceList = async function (userId) {
         }).then((res) => {
           return res.price;
         });
-        let price = (ftxPrice + binancePrice) / 2;
+        let price;
+        if (ftxPrice && binancePrice) {
+          price =(ftxPrice + binancePrice)  / 2;
+        } else if (ftxPrice) {
+          price = ftxPrice;
+        } else if (binancePrice) {
+          price = binancePrice;
+        } else {
+          price = 0;
+        }
         let data = {
           name: docs[i].name,
           abbreviation: docs[i].abbreviation,
