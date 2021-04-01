@@ -2,6 +2,7 @@ const socker = require("./sockerController");
 const {
   renderCoinsubscriptionList,
   addScription,
+  deleteScription,
 } = require("./renderSubscription");
 
 module.exports = async (io, socket) => {
@@ -18,5 +19,10 @@ module.exports = async (io, socket) => {
     console.log(`userId:${userId},coin:${coin}`);
     if (!coin) return;
     addScription(userId, coin);
+  });
+  socket.on("deleteScription", (userId, coin) => {
+    console.log(`userId:${userId},coin:${coin}`);
+    if (!coin) return;
+    deleteScription(userId, coin);
   });
 };

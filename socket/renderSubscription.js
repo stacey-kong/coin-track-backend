@@ -35,8 +35,17 @@ const addScription = async function (userId, coin) {
   return userNewSubscription;
 };
 
+const deleteScription = async function (userId, coin) {
+  const userNewSubscription = await subscription.findOneAndUpdate(
+    { user: userId },
+    { $pull: { subscription: coin } }
+  );
+  return userNewSubscription;
+};
+
 module.exports = {
   getUserSubscription,
   renderCoinsubscriptionList,
   addScription,
+  deleteScription,
 };
