@@ -17,16 +17,14 @@ const app = express();
 const server = new http.Server(app);
 socker(server);
 
-var authPort = process.env.PORT || 9010;
+var Port = process.env.PORT || 9010;
 
-var socketPort = process.env.PORT || 9011;
+// app.listen(authPort, () => {
+//   console.log(`Api listening on port 9010!`);
+// });
 
-app.listen(authPort, () => {
-  console.log(`Api listening on port 9010!`);
-});
-
-server.listen(socketPort, () => {
-  console.log(`Socker listening on port 9011!`);
+server.listen(Port, () => {
+  console.log(`App is listening on ${Port} !`);
   // logger.info(`Api and socker whitelisted for ${host}`);
 });
 
