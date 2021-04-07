@@ -5,7 +5,7 @@ const subscriptionHandler = require("./subscriptionHandler");
 exports.socker = (server) => {
   const io = socketio(server, {
     cors: {
-      origin: "http://localhost:9009",
+      origin: "*",
       methods: ["GET", "POST"],
     },
   });
