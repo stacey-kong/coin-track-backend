@@ -17,11 +17,15 @@ const app = express();
 const server = new http.Server(app);
 socker(server);
 
-app.listen(9010, () => {
+var authPort = process.env.PORT || 9010;
+
+var socketPort = process.env.PORT || 9011;
+
+app.listen(authPort, () => {
   console.log(`Api listening on port 9010!`);
 });
 
-server.listen(9011, () => {
+server.listen(socketPort, () => {
   console.log(`Socker listening on port 9011!`);
   // logger.info(`Api and socker whitelisted for ${host}`);
 });
@@ -43,7 +47,7 @@ const dbURI =
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 // force findand{dosth} series to use it original function in mongodb
-mongoose.set('useFindAndModify', false);
+mongoose.set("useFindAndModify", false);
 
 db.on("error", (err) => {
   console.error(err);
