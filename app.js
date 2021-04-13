@@ -17,15 +17,12 @@ const app = express();
 const server = new http.Server(app);
 socker(server);
 
+// initial environment variables
+require("dotenv").config;
+
 var Port = process.env.PORT || 9010;
-
-// app.listen(authPort, () => {
-//   console.log(`Api listening on port 9010!`);
-// });
-
-server.listen(Port, () => {
+server.listen(process.env.PORT, () => {
   console.log(`App is listening on ${Port} !`);
-  // logger.info(`Api and socker whitelisted for ${host}`);
 });
 
 // view engine setup
@@ -40,9 +37,11 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
 // connect to mongoDB
-const dbURI =
-  "mongodb+srv://dbStacey:Db123456@cluster0.sq0s8.mongodb.net/coin?retryWrites=true&w=majority";
-mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
+console.log(process.env.DB_URL);
+mongoose.connect(process.env.DB_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 const db = mongoose.connection;
 // force findand{dosth} series to use it original function in mongodb
 mongoose.set("useFindAndModify", false);
