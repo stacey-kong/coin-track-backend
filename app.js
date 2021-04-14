@@ -4,6 +4,7 @@ const logger = require("morgan");
 const mongoose = require("mongoose");
 const path = require("path");
 const cors = require("cors");
+const {run} = require("./BackendService/fetchCoinPrice");
 
 const authRouter = require("./routes/auth");
 const coinRouter = require("./routes/coin");
@@ -72,5 +73,7 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render("error");
 });
+
+run();
 
 module.exports = app;

@@ -102,4 +102,5 @@ async function updateCoinPrice() {
 function run() {
   setInterval(updateCoinPrice, 1000);
 }
-run();
+
+module.exports = { run };
