@@ -23,13 +23,13 @@ async function updateFTXCoinPrice() {
           .then((res) => {
             return res.data.result.price;
           })
-          .catch((err) => console.log(err));
+          .catch((err) => console.log(`no ftx market price of ${coin.abbreviation}`));
         let perpPrice = await axios
           .get(`${ftxApi}${coin.abbreviation}-PERP`)
           .then((res) => {
             return res.data.result.price;
           })
-          .catch((err) => console.log(err));
+          .catch((err) => console.log(`no ftx prep price of ${coin.abbreviation}`));
         if (marketPrice) {
           price = marketPrice;
         } else if (perpPrice) {
@@ -83,7 +83,7 @@ async function updateBinanceCoinPrice() {
             });
           })
           .catch((error) => {
-            console.log(error);
+            console.log(`no binance price of ${coin.abbreviation}`);
             return;
           });
       }
