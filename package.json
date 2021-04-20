@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "devstart": "nodemon ./bin/www",
+    "devstart": "nodemon -r dotenv/config ./bin/www",
     "serverstart": "DEBUG=My_Backend:* yarn run devstart"
   },
   "dependencies": {

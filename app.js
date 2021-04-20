@@ -4,7 +4,7 @@ const logger = require("morgan");
 const mongoose = require("mongoose");
 const path = require("path");
 const cors = require("cors");
-const {run} = require("./BackendService/fetchCoinPrice");
+const { run } = require("./BackendService/fetchCoinPrice");
 
 const authRouter = require("./routes/auth");
 const coinRouter = require("./routes/coin");
@@ -22,7 +22,7 @@ socker(server);
 require("dotenv").config;
 
 var Port = process.env.PORT || 9010;
-server.listen(process.env.PORT, () => {
+server.listen(Port, () => {
   console.log(`App is listening on ${Port} !`);
 });
 
