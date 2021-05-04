@@ -1,4 +1,3 @@
-var async = require("async");
 var Coin = require("../app/models/coin");
 var CoinInstance = require("../app/models/coininstance");
 
