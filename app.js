@@ -4,7 +4,7 @@ const logger = require("morgan");
 const mongoose = require("mongoose");
 const path = require("path");
 const cors = require("cors");
-const { run } = require("./BackendService/fetchCoinPrice");
+const { run } = require("./BackendService/fetchDataService");
 
 const authRouter = require("./routes/auth");
 const coinRouter = require("./routes/coin");

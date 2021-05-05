@@ -12,6 +12,7 @@ module.exports = async (io, socket) => {
       const averageprice = await averagePriceList(payload);
       socket.emit("allPrice", averageprice);
     };
+    pushAveragePriceOnce()
     setInterval(pushAveragePriceOnce, 3000);
   };
 
