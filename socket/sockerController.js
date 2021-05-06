@@ -2,6 +2,7 @@ const socketio = require("socket.io");
 const coinPriceHandler = require("./coinPriceHandler");
 const subscriptionHandler = require("./subscriptionHandler");
 const coinTrackingListHandler = require("./coinTrackingListHandler");
+const lendingInterestHandler = require("./lendingInterestHandler");
 
 exports.socker = (server) => {
   const io = socketio(server, {
@@ -16,6 +17,7 @@ exports.socker = (server) => {
     coinPriceHandler(io, socket);
     subscriptionHandler(io, socket);
     coinTrackingListHandler(io, socket);
+    lendingInterestHandler(io, socket);
   };
 
   io.on("connection", onConnection);

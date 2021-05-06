@@ -21,7 +21,7 @@ module.exports = async (io, socket) => {
       const coinprice = await checkCoinprice(coin);
       socket.emit(`${coin}`, coinprice);
     };
-    // pushCoinPriceOnce()
+    pushCoinPriceOnce()
     setInterval(pushCoinPriceOnce, 3000);
   };
   socket.on("averageprice", (payload) => {
