@@ -130,12 +130,14 @@ async function populateLendingRate() {
   // enter start time and end time to get period lending rate
   let now = new Date();
   let UTCHours = now.getUTCHours();
-  const startTime = 1614556800;
+  const startTimestamp = 1614528000; //2021 March 1th
   const endTime = now.setUTCHours(UTCHours, 0, 0, 0);
-  console.log(endTime);
+  endTimestamp = endTime / 1000;
+
+  console.log(endTimestamp);
   axios
     .get(
-      `https://ftx.us/api/spot_margin/history?&coin=USDstart_time=${startTime}&end_time=${endTime}`
+      `https://ftx.us/api/spot_margin/history?coin=USD&start_time=${startTimestamp}&end_time=${endTimestamp}`
     )
     .then(async (res) => {
       data = res.data.result;
@@ -143,9 +145,18 @@ async function populateLendingRate() {
         let Rate = data[i];
         let time = Rate.time;
         timestamp = new Date(time).getTime();
+        // let lendingRateDetail = {
+        //   coin: Rate.coin,
+        //   time: timestamp,
+        //   rate: Rate.rate,
+        // };
+        // let lendingRate = new LendingRate(lendingRateDetail);
+        // lendingRate.save();
         // console.log(typeof timestamp);
+        // incase backend service accidentially stopped ,fetch all data again and update the missing one
         await LendingRate.findOne({ time: timestamp }, function (err, res) {
           if (!res) {
+            console.log(timestamp)
             let lendingRateDetail = {
               coin: Rate.coin,
               time: timestamp,
@@ -156,7 +167,9 @@ async function populateLendingRate() {
           }
         });
       }
-    });
+      // }
+    })
+    .catch((err) => console.log(err));
 }
 
 populateLendingRate();
