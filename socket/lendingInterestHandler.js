@@ -4,42 +4,45 @@ const {
   calculateWeeklyInterest,
   calculateDailyInterest,
   checkingAmount,
-  calculatemonthlyInterest
+  calculatemonthlyInterest,
 } = require("./renderLendingInterest");
 
 module.exports = async (io, socket) => {
-  const pushInterestOnce = async (userId) => {
-    const monthlyinterst = await calculatemonthlyInterest(userId);
-    const weeklyinterst = await calculateWeeklyInterest(userId);
-    const dailyinterest = await calculateDailyInterest(userId);
-    const interest = {
-      today: dailyinterest,
-      week: weeklyinterst,
-      month: monthlyinterst,
+  const pushInterest = (userId, timeType) => {
+    const pushInterestOnce = async () => {
+      const monthlyinterst = await calculatemonthlyInterest(userId, timeType);
+      const weeklyinterst = await calculateWeeklyInterest(userId, timeType);
+      const dailyinterest = await calculateDailyInterest(userId, timeType);
+      const interest = {
+        today: dailyinterest,
+        week: weeklyinterst,
+        month: monthlyinterst,
+      };
+      let amount = await checkingAmount(userId);
+      // console.log(`new:${amount}`);
+
+      let res = [interest, amount];
+
+      // console.log(res);
+      console.log(interest);
+      socket.emit("lendingInterest", res);
     };
-    let amount = await checkingAmount(userId);
-    // console.log(`new:${amount}`);
-
-    let res = [interest, amount];
-
-    // console.log(res);
-    // console.log(interest);
-    socket.emit("lendingInterest", res);
+    pushInterestOnce();
+    setInterval(pushInterestOnce,  1.8e6);
   };
-
-  const pushInterest = (userId) => {
-    pushInterestOnce(userId);
-    setInterval(pushInterestOnce, 1.8e6);
-  };
+  // half an hour equals 1.8e6
 
   socket.on("reviseLending", async (userId, amount) => {
     // wait lending amount update before interest calculation
     const revisement = await reviseLendingRate(userId, amount);
 
-    pushInterestOnce(userId);
+    pushInterest(userId, "UTC");
   });
 
-  socket.on("lending", async (userId) => {
-    pushInterest(userId);
+  socket.on("lending", async (userId, timeType) => {
+    // const userId=payload.useId
+    // const timeType=payload.timeType
+    console.log(timeType);
+    pushInterest(userId, timeType);
   });
 };

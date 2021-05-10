@@ -128,30 +128,38 @@ async function fetchingLendingRate() {
 
 async function populateLendingRate() {
   // enter start time and end time to get period lending rate
+  let now = new Date();
+  let UTCHours = now.getUTCHours();
   const startTime = 1614556800;
-  const endTime = 1620194400;
-
+  const endTime = now.setUTCHours(UTCHours, 0, 0, 0);
+  console.log(endTime);
   axios
     .get(
-      `https://ftx.us/api/spot_margin/history?start_time=${startTime}&end_time=${endTime}&coin=USD`
+      `https://ftx.us/api/spot_margin/history?&coin=USDstart_time=${startTime}&end_time=${endTime}`
     )
-    .then((res) => {
+    .then(async (res) => {
       data = res.data.result;
       for (i = 0; i < data.length; i++) {
         let Rate = data[i];
         let time = Rate.time;
         timestamp = new Date(time).getTime();
         // console.log(typeof timestamp);
-        let lendingRateDetail = {
-          coin: Rate.coin,
-          time: timestamp,
-          rate: Rate.rate,
-        };
-        let lendingRate = new LendingRate(lendingRateDetail);
-        lendingRate.save();
+        await LendingRate.findOne({ time: timestamp }, function (err, res) {
+          if (!res) {
+            let lendingRateDetail = {
+              coin: Rate.coin,
+              time: timestamp,
+              rate: Rate.rate,
+            };
+            let lendingRate = new LendingRate(lendingRateDetail);
+            lendingRate.save();
+          }
+        });
       }
     });
 }
+
+populateLendingRate();
 
 async function updateCoinPrice() {
   await updateFTXCoinPrice();
@@ -168,4 +176,4 @@ function run() {
   setInterval(fetchingLendingRate, 600000);
 }
 
-module.exports = { run,populateLendingRate };
+module.exports = { run, populateLendingRate };
