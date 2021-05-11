@@ -28,7 +28,7 @@ module.exports = async (coinname, symbol) => {
     return res;
   }
 
-  function coinInstanceCreate(coin, exchange) {
+  async function coinInstanceCreate(coin, exchange) {
     coinInstanceDetail = {
       coin: coin,
       exchange: exchange,
@@ -37,7 +37,7 @@ module.exports = async (coinname, symbol) => {
       historyLow: 0,
     };
     let coinInstance = new CoinInstance(coinInstanceDetail);
-    coinInstance.save();
+    await coinInstance.save();
   }
 
   // coinCreate("Bitcoin", "BTC");
@@ -57,13 +57,14 @@ module.exports = async (coinname, symbol) => {
 
   let result = await coinCreate(coinname, symbol);
 
-  coins.length > 1 &&
+  if (result) {
     coins.forEach((coin) => {
       exchanges.forEach((exchange) => {
+        console.log(`${coin},${exchange}`);
         coinInstanceCreate(coin, exchange);
       });
     });
-
+  }
   return result;
 };
 

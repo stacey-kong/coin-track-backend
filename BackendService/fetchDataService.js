@@ -12,6 +12,7 @@ var db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 const ftxApi = "https://ftx.com/api/markets/";
+const ftxFutureApi = "https://ftx.com/api/futures/";
 const binanceApi = "https://api1.binance.com/api/v3/ticker/price?symbol=";
 
 async function updateFTXCoinPrice() {
@@ -24,16 +25,22 @@ async function updateFTXCoinPrice() {
           .then((res) => {
             return res.data.result.price;
           })
-          .catch((err) =>
-            console.log(`no ftx market price of ${coin.abbreviation}`)
+          .catch(
+            (err) => {
+              return;
+            }
+            // console.log(`no ftx market price of ${coin.abbreviation}`)
           );
         let perpPrice = await axios
-          .get(`${ftxApi}${coin.abbreviation}-PERP`)
+          .get(`${ftxFutureApi}${coin.abbreviation}-PERP`)
           .then((res) => {
             return res.data.result.price;
           })
-          .catch((err) =>
-            console.log(`no ftx prep price of ${coin.abbreviation}`)
+          .catch(
+            (err) => {
+              return;
+            }
+            // console.log(`no ftx prep price of ${coin.abbreviation}`)
           );
         if (marketPrice) {
           price = marketPrice;
@@ -88,7 +95,7 @@ async function updateBinanceCoinPrice() {
             });
           })
           .catch((error) => {
-            console.log(`no binance price of ${coin.abbreviation}`);
+            // console.log(`no binance price of ${coin.abbreviation}`);
             return;
           });
       }

@@ -54,18 +54,26 @@ exports.averagePriceList = async function (userId) {
         let ftxPrice = await CoinInstance.findOne({
           coin: docs[i]._id,
           exchange: "FTX",
-        }).then((res) => {
-          return res.price;
-        });
+        })
+          .then((res) => {
+            return res.price;
+          })
+          .catch((err) => {
+            return;
+          });
         let binancePrice = await CoinInstance.findOne({
           coin: docs[i]._id,
           exchange: "Binance",
-        }).then((res) => {
-          return res.price;
-        });
+        })
+          .then((res) => {
+            return res.price;
+          })
+          .catch((err) => {
+            return;
+          });
         let price;
         if (ftxPrice && binancePrice) {
-          price =(ftxPrice + binancePrice)  / 2;
+          price = (ftxPrice + binancePrice) / 2;
         } else if (ftxPrice) {
           price = ftxPrice;
         } else if (binancePrice) {
@@ -76,7 +84,12 @@ exports.averagePriceList = async function (userId) {
         let data = {
           name: docs[i].name,
           abbreviation: docs[i].abbreviation,
-          price: price > 1 ? price.toFixed(2) : price.toFixed(4),
+          price:
+            price > 1
+              ? price.toFixed(2)
+              : price < 0.0001
+              ? price.toFixed(7)
+              : price.toFixed(4),
         };
         // console.log(data);
         priceList.push(data);

@@ -5,6 +5,7 @@ const axios = require("axios");
 module.exports = async (io, socket) => {
   socket.on("addCoin", async (payload, cb) => {
     const ftxApi = "https://ftx.com/api/markets/";
+    const ftxFutureApi = "https://ftx.com/api/futures/";
     const binanceApi = "https://api1.binance.com/api/v3/ticker/price?symbol=";
     let checkftxStatus = await axios
       .get(`${ftxApi}${payload.symbol}/USD`)
@@ -14,6 +15,15 @@ module.exports = async (io, socket) => {
       })
       .catch((err) => console.log(`no ftx market price of ${payload.symbol}`));
 
+    let checkftxFutureStatus = await axios
+      .get(`${ftxFutureApi}${payload.symbol}-PERP`)
+      .then((res) => {
+        let status = true;
+        return status;
+      })
+      .catch((err) => {
+        (err) => console.log(`no ftx future price of ${payload.symbol}`);
+      });
     let checkbinanceStatus = await axios
       .get(`${binanceApi}${payload.symbol}BTC`)
       .then((response) => {
@@ -24,7 +34,7 @@ module.exports = async (io, socket) => {
         console.log(`no binance price of ${payload.symbol}`);
       });
 
-    if (checkbinanceStatus | checkftxStatus) {
+    if (checkbinanceStatus | checkftxStatus | checkftxFutureStatus) {
       const res = await coinCreate(payload.name, payload.symbol);
       if (!res) {
         cb({
