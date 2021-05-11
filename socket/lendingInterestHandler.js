@@ -5,10 +5,11 @@ const {
   calculateDailyInterest,
   checkingAmount,
   calculatemonthlyInterest,
+  calculateRecentDayInterest,
 } = require("./renderLendingInterest");
 
 module.exports = async (io, socket) => {
-  const pushInterest = (userId, timeType) => {
+  const pushInterest = async (userId, timeType) => {
     const pushInterestOnce = async () => {
       const monthlyinterst = await calculatemonthlyInterest(userId, timeType);
       const weeklyinterst = await calculateWeeklyInterest(userId, timeType);
@@ -24,11 +25,11 @@ module.exports = async (io, socket) => {
       let res = [interest, amount];
 
       // console.log(res);
-      console.log(interest);
+      // console.log(interest);
       socket.emit("lendingInterest", res);
     };
     pushInterestOnce();
-    setInterval(pushInterestOnce,  1.8e6);
+    setInterval(pushInterestOnce, 1.8e6);
   };
   // half an hour equals 1.8e6
 
@@ -44,5 +45,11 @@ module.exports = async (io, socket) => {
     // const timeType=payload.timeType
     console.log(timeType);
     pushInterest(userId, timeType);
+  });
+
+  socket.on("dailyLending", async (userId, timestamp, days) => {
+    const daysinWeek = days ? days : false;
+    const interest = await calculateRecentDayInterest(userId, timestamp, daysinWeek);
+    socket.emit("dailyInterest", interest);
   });
 };

@@ -144,7 +144,7 @@ async function populateLendingRate() {
   console.log(endTimestamp);
   axios
     .get(
-      `https://ftx.us/api/spot_margin/history?coin=USD&start_time=${startTimestamp}&end_time=${endTimestamp}`
+      `https://ftx.com/api/spot_margin/history?coin=USD&start_time=${startTimestamp}&end_time=${endTimestamp}`
     )
     .then(async (res) => {
       data = res.data.result;
@@ -163,7 +163,7 @@ async function populateLendingRate() {
         // incase backend service accidentially stopped ,fetch all data again and update the missing one
         await LendingRate.findOne({ time: timestamp }, function (err, res) {
           if (!res) {
-            console.log(timestamp)
+            // console.log(timestamp);
             let lendingRateDetail = {
               coin: Rate.coin,
               time: timestamp,
