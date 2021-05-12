@@ -26,29 +26,22 @@ async function updateFTXCoinPrice() {
             return res.data.result.price;
           })
           .catch(
-            (err) => {
-              return;
-            }
+            (err) => {}
             // console.log(`no ftx market price of ${coin.abbreviation}`)
           );
         let perpPrice = await axios
           .get(`${ftxFutureApi}${coin.abbreviation}-PERP`)
           .then((res) => {
-            return res.data.result.price;
+            return res.data.result.bid;
           })
-          .catch(
-            (err) => {
-              return;
-            }
-            // console.log(`no ftx prep price of ${coin.abbreviation}`)
-          );
+          .catch((err) => {});
+
         if (marketPrice) {
           price = marketPrice;
         } else if (perpPrice) {
-          console.log(`prep:${perpPrice}`);
           price = perpPrice;
         }
-        console.log(price);
+
         return price;
       };
 
@@ -75,7 +68,7 @@ async function updateBinanceCoinPrice() {
       return res.data.price;
     })
     .catch((err) => {
-      console.log(err);
+      // console.log(err);
     });
 
   await Coin.find({}, function (err, doc) {
