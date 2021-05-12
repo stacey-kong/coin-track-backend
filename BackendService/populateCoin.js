@@ -1,14 +1,14 @@
 var Coin = require("../app/models/coin");
 var CoinInstance = require("../app/models/coininstance");
 
-var mongoose = require("mongoose");
-const coininstance = require("../app/models/coininstance");
-var mongoDB =
-  "mongodb+srv://dbStacey:Db123456@cluster0.sq0s8.mongodb.net/coin?retryWrites=true&w=majority";
-mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.Promise = global.Promise;
-var db = mongoose.connection;
-db.on("error", console.error.bind(console, "MongoDB connection error:"));
+// var mongoose = require("mongoose");
+// const coininstance = require("../app/models/coininstance");
+// var mongoDB =
+//   "mongodb+srv://dbStacey:Db123456@cluster0.sq0s8.mongodb.net/coin?retryWrites=true&w=majority";
+// mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
+// mongoose.Promise = global.Promise;
+// var db = mongoose.connection;
+// db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 module.exports = async (coinname, symbol) => {
   let coins = [];

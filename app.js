@@ -1,3 +1,5 @@
+// initial environment variables
+require("dotenv").config({path: __dirname + '/.env'});
 const createError = require("http-errors");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
@@ -18,9 +20,6 @@ const app = express();
 const server = new http.Server(app);
 socker(server);
 
-// initial environment variables
-require("dotenv").config;
-
 var Port = process.env.PORT || 9010;
 server.listen(Port, () => {
   console.log(`App is listening on ${Port} !`);
@@ -38,7 +37,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
 // connect to mongoDB
-console.log(process.env.DB_URL);
+
+console.log(`process.env.DB_URL${process.env.DB_URL}`);
 mongoose.connect(`${process.env.DB_URL}`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
