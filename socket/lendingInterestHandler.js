@@ -47,9 +47,8 @@ module.exports = async (io, socket) => {
     pushInterest(userId, timeType);
   });
 
-  socket.on("dailyLending", async (userId, timestamp, days) => {
-    const daysinWeek = days ? days : false;
-    const interest = await calculateRecentDayInterest(userId, timestamp, daysinWeek);
+  socket.on("dailyLending", async (userId, timestamp) => {
+    const interest = await calculateRecentDayInterest(userId, timestamp);
     socket.emit("dailyInterest", interest);
   });
 };

@@ -149,11 +149,15 @@ const calculatePeriodInterest = async function (startTime, endTime) {
 
 exports.calculateRecentDayInterest = async function (userId, timestamp, days) {
   let now = new Date(timestamp);
-  let localHour = now.getHours();
-  let nowatLocal = now.setHours(localHour, 0, 0, 0);
-  let week_start_local = nowatLocal - localHour * 3.6e6;
-  let totaldays = days ? days : now.getDay() + 1;
-  // console.log(totaldays)
+  let now_start_local = now.setHours(0, 0, 0, 0);
+  let realNow = new Date();
+  let day = realNow.getDay();
+  let realNowStart = realNow.setHours(0, 0, 0, 0) - (day - 1) * 8.64e7;
+  // console.log(`realNowStart:${realNowStart}`);
+  // console.log(`timestamp:${timestamp}`);
+  let totaldays = realNowStart === timestamp ? day: 7;
+
+  // console.log(`totaldays:${totaldays}`);
 
   const dayilyInterest = await LendingAmount.findOne({ user: userId }).then(
     async (res) => {
@@ -161,7 +165,7 @@ exports.calculateRecentDayInterest = async function (userId, timestamp, days) {
       let interest = [];
 
       for (let i = 0; i < totaldays; i++) {
-        let startTime = week_start_local + i * 8.64e7;
+        let startTime = now_start_local + i * 8.64e7;
         // console.log(startTime);
         let AccumulateRate = await calculatePeriodInterest(
           startTime,
@@ -169,7 +173,7 @@ exports.calculateRecentDayInterest = async function (userId, timestamp, days) {
           startTime + (8.64e7 - 3.6e6)
         );
 
-        let date = new Date(startTime);
+        // let date = new Date(startTime);
 
         let lendingInterest = {
           x: startTime,
