@@ -4,17 +4,15 @@ const subscriptionHandler = require("./subscriptionHandler");
 const coinTrackingListHandler = require("./coinTrackingListHandler");
 const lendingInterestHandler = require("./lendingInterestHandler");
 // const {pushAveragePrice}=require("./coinPriceHandler")
-const { PriceList } = require("../BackendService/index");
+const { data } = require("../BackendService/index");
 
-
-
+// let data = {
+//   PriceList: PriceList,
+// };
 
 const pushAveragePrice = (io) => {
-  let i = 1;
   const pushAveragePriceOnce = () => {
-    io.to('room1').emit(PriceList);
-    console.log(`send${i}`);
-    i = i + 1;
+    io.to("room1").emit("price", data.PriceList);
   };
   pushAveragePriceOnce();
   updatePriceList();
@@ -35,8 +33,10 @@ exports.socker = (server) => {
   });
 
   const onConnection = (socket) => {
-    socket.join(`room1`)
+    socket.join(`room1`);
     console.log("Client Connected");
+    socket.emit("connected", true);
+    console.log("connected");
     coinPriceHandler(io, socket);
     subscriptionHandler(io, socket);
     coinTrackingListHandler(io, socket);
@@ -48,6 +48,6 @@ exports.socker = (server) => {
     console.log("disconnect");
     io.close();
   });
-  pushAveragePrice(io)
+  pushAveragePrice(io);
   return io;
 };
