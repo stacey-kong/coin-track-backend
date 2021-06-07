@@ -3,14 +3,6 @@ const Coin = require("../app/models/coin");
 const LendingRate = require("../app/models/lending");
 const axios = require("axios");
 
-// var mongoose = require("mongoose");
-// var mongoDB =
-//   "mongodb+srv://dbStacey:Db123456@cluster0.sq0s8.mongodb.net/coin?retryWrites=true&w=majority";
-// mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
-// mongoose.Promise = global.Promise;
-// var db = mongoose.connection;
-// db.on("error", console.error.bind(console, "MongoDB connection error:"));
-
 const ftxApi = "https://ftx.com/api/markets/";
 const ftxFutureApi = "https://ftx.com/api/futures/";
 const binanceApi = "https://api1.binance.com/api/v3/ticker/price?symbol=";
@@ -181,12 +173,18 @@ async function updateCoinPrice() {
   await updateBinanceCoinPrice();
 }
 
+function timeout() {
+  setTimeout(function () {
+    updateCoinPrice()
+      timeout();
+  }, 1000);
+}
+
 function run() {
   // fetch once first
   updateCoinPrice();
   fetchingLendingRate();
-
-  setInterval(updateCoinPrice, 1000);
+  timeout()
   // try update lending rate every 10 mins
   setInterval(fetchingLendingRate, 600000);
 }
