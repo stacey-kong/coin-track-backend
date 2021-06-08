@@ -1,4 +1,3 @@
-const socker = require("./sockerController");
 const {
   reviseLendingRate,
   calculateWeeklyInterest,
@@ -8,7 +7,7 @@ const {
   calculateRecentDayInterest,
 } = require("./renderLendingInterest");
 
-module.exports = async (io, socket) => {
+module.exports = async (socket) => {
   const pushInterest = async (userId, timeType) => {
     const pushInterestOnce = async () => {
       const monthlyinterst = await calculatemonthlyInterest(userId, timeType);

@@ -1,8 +1,7 @@
-const socker = require("./sockerController");
 const coinCreate = require("../BackendService/populateCoin");
 const axios = require("axios");
 
-module.exports = async (io, socket) => {
+module.exports = async (socket) => {
   socket.on("addCoin", async (payload, cb) => {
     const ftxApi = "https://ftx.com/api/markets/";
     const ftxFutureApi = "https://ftx.com/api/futures/";

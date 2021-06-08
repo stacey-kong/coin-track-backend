@@ -3,6 +3,8 @@ const coinPriceHandler = require("./coinPriceHandler");
 const subscriptionHandler = require("./subscriptionHandler");
 const coinTrackingListHandler = require("./coinTrackingListHandler");
 const lendingInterestHandler = require("./lendingInterestHandler");
+const landingListener = require("./landingListener");
+
 // const {pushAveragePrice}=require("./coinPriceHandler")
 const { data } = require("../BackendService/index");
 
@@ -32,22 +34,27 @@ exports.socker = (server) => {
     },
   });
 
-  const onConnection = (socket) => {
-    socket.join(`room1`);
-    console.log("Client Connected");
-    socket.emit("connected", true);
-    console.log("connected");
-    coinPriceHandler(io, socket);
-    subscriptionHandler(io, socket);
-    coinTrackingListHandler(io, socket);
-    lendingInterestHandler(io, socket);
-  };
+  // const onConnection = (socket) => {
+  //   console.log("Client Connected");
+  //   landingListener( socket);
+  //   coinPriceHandler( socket);
+  //   subscriptionHandler( socket);
+  //   coinTrackingListHandler(socket);
+  //   lendingInterestHandler( socket);
+  // };
 
-  io.on("connection", onConnection);
-  io.on("disconnect", () => {
-    console.log("disconnect");
-    io.close();
+  io.on("connection", function(socket){
+    console.log("Client Connected");
+    landingListener(socket);
+    coinPriceHandler(socket);
+    subscriptionHandler(socket);
+    coinTrackingListHandler(socket);
+    lendingInterestHandler(socket);
   });
+  // io.on("disconnect", () => {
+  //   console.log("disconnect");
+  //   io.close();
+  // });
   pushAveragePrice(io);
   return io;
 };

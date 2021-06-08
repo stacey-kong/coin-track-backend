@@ -1,11 +1,10 @@
-const socker = require("./sockerController");
 const {
   renderCoinsubscriptionList,
   addScription,
   deleteScription,
 } = require("./renderSubscription");
 
-module.exports = async (io, socket) => {
+module.exports = async (socket) => {
   const sendCoinList = async (payload) => {
     const user = payload;
     const coinlist = await renderCoinsubscriptionList(user);

@@ -1,7 +1,6 @@
-const socker = require("./sockerController");
 const { checkCoinprice } = require("./renderPrice");
 
-module.exports = async (io, socket) => {
+module.exports = async (socket) => {
   const pushCoinPrice = (coin) => {
     const pushCoinPriceOnce = async () => {
       const coinprice = await checkCoinprice(coin);
