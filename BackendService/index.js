@@ -2,8 +2,8 @@ const { run } = require("./fetchDataService");
 const { averagePriceList } = require("./renderingPrice");
 
 var mongoose = require("mongoose");
-var mongoDB =
-  "mongodb+srv://dbStacey:Db123456@cluster0.sq0s8.mongodb.net/coin?retryWrites=true&w=majority";
+var mongoDB =process.env.DB_URL
+console.log(mongoDB)
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
