@@ -1,14 +1,10 @@
 const socketio = require("socket.io");
-const coinPriceHandler = require("./coinPriceHandler");
-const subscriptionHandler = require("./subscriptionHandler");
-const coinTrackingListHandler = require("./coinTrackingListHandler");
-const lendingInterestHandler = require("./lendingInterestHandler");
-// const {pushAveragePrice}=require("./coinPriceHandler")
-const { data } = require("../BackendService/index");
+// const coinPriceHandler = require("./coinPriceHandler");
+// const coinTrackingListHandler = require("./coinTrackingListHandler");
+// const lendingInterestHandler = require("./lendingInterestHandler");
+const landingListener = require("./landingListener");
 
-// let data = {
-//   PriceList: PriceList,
-// };
+const { data } = require("../BackendService/index");
 
 const pushAveragePrice = (io) => {
   const pushAveragePriceOnce = () => {
@@ -33,17 +29,12 @@ exports.socker = (server) => {
   });
 
   const onConnection = (socket) => {
-    socket.join(`room1`);
-    console.log("Client Connected");
-    socket.emit("connected", true);
     console.log("connected");
-    coinPriceHandler(io, socket);
-    subscriptionHandler(io, socket);
-    coinTrackingListHandler(io, socket);
-    lendingInterestHandler(io, socket);
+    landingListener(socket);
   };
 
   io.on("connection", onConnection);
+
   io.on("disconnect", () => {
     console.log("disconnect");
     io.close();
