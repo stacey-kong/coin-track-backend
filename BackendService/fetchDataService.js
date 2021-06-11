@@ -139,14 +139,6 @@ async function populateLendingRate() {
         let Rate = data[i];
         let time = Rate.time;
         timestamp = new Date(time).getTime();
-        // let lendingRateDetail = {
-        //   coin: Rate.coin,
-        //   time: timestamp,
-        //   rate: Rate.rate,
-        // };
-        // let lendingRate = new LendingRate(lendingRateDetail);
-        // lendingRate.save();
-        // console.log(typeof timestamp);
         // incase backend service accidentially stopped ,fetch all data again and update the missing one
         await LendingRate.findOne({ time: timestamp }, function (err, res) {
           if (!res) {

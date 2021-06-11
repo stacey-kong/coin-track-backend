@@ -1,7 +1,6 @@
 const socketio = require("socket.io");
 // const coinPriceHandler = require("./coinPriceHandler");
 // const coinTrackingListHandler = require("./coinTrackingListHandler");
-// const lendingInterestHandler = require("./lendingInterestHandler");
 const landingListener = require("./landingListener");
 
 const { data } = require("../BackendService/index");

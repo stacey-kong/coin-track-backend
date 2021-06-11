@@ -1,5 +1,5 @@
 // initial environment variables
-require("dotenv").config({path: __dirname + '/.env'});
+require("dotenv").config({ path: __dirname + "/.env" });
 const createError = require("http-errors");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
@@ -11,6 +11,7 @@ const cors = require("cors");
 const authRouter = require("./routes/auth");
 const coinRouter = require("./routes/coin");
 const subscriptionRouter = require("./routes/subscription");
+const lendingRouter = require("./routes/lending");
 
 // implement the server with socket.io
 const { socker } = require("./socket/sockerController");
@@ -59,6 +60,7 @@ db.once("open", () => {
 app.use("/api/auth", authRouter);
 app.use("/api/coin", coinRouter);
 app.use("/api/subscription", subscriptionRouter);
+app.use("/api/lending", lendingRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
