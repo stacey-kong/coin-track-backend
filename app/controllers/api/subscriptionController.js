@@ -24,7 +24,7 @@ exports.getSubscriptionList = async (req, res) => {
   try {
     await Coin.find({}).then(async (coins) => {
       let list = [];
-      for (i = 0; i < coins.length; i++) {
+      for (let i = 0; i < coins.length; i++) {
         let data = {
           name: coins[i].name,
           symbol: coins[i].abbreviation,

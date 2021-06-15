@@ -4,29 +4,41 @@ const { success, error, validation } = require("../../helpers/responseApi");
 
 /**
  * @desc    Track a new coin
- * @method  GET api/coin/track
+ * @method  GET api/coin/price
  * @access  public
  */
 exports.price = async (req, res) => {
-  const { name, exchange } = req.body;
+  const { abb } = req.body;
 
   try {
-    let coin = await Coin.findOne({ abbreviation: name });
-    console.log(coin);
-    let coinDetail = await CoinInstance.findOne({
-      coin: coin._id,
-      exchange: exchange,
-    });
+    let coin = await Coin.findOne({ abbreviation: abb });
+
     if (!coin) {
       return res.status(404).json(error("Not a tracking coin", res.statusCode));
     }
-    if (coin) {
+
+    let coinDetail = await CoinInstance.find({
+      coin: coin._id,
+    }).then(async (coins) => {
+      let list = [];
+      for (let i = 0; i < coins.length; i++) {
+        let data = {
+          price: coins[i].price,
+          exchange: coins[i].exchange,
+        };
+
+        list.push(data);
+      }
+      return list;
+    });
+
+    if (coin && coinDetail) {
       return res.status(201).json(
         success(
           {
             data: {
-              name: coin.name,
-              price: coinDetail.price,
+              name: coin.abbreviation,
+              price: coinDetail,
             },
           },
           res.statusCode
