@@ -40,21 +40,6 @@ module.exports = async (coinname, symbol) => {
     await coinInstance.save();
   }
 
-  // coinCreate("Bitcoin", "BTC");
-  // coinCreate("Ethereum", "ETH");
-  // coinCreate("FTX Token", "FTT");
-  // coinCreate("LINA", "LINA");
-  // coinCreate("Polkadot", "DOT");
-  // coinCreate("Tether", "USDT");
-  // coinCreate("Binance Coin", "BNB");
-  // coinCreate("Uniswap", "UNI");
-  // coinCreate("Bitcoin Cash", "BCH");
-  // coinCreate("Dogecoin", "DOGE");
-  // coinCreate("TORN", "TRX");
-  // coinCreate("EOS", "EOS");
-  // coinCreate("Synthetix", "SNX");
-  // coinCreate("Solana", "SOL");
-
   let result = await coinCreate(coinname, symbol);
 
   if (result) {
@@ -67,5 +52,20 @@ module.exports = async (coinname, symbol) => {
   }
   return result;
 };
+
+// coinCreate("Bitcoin", "BTC");
+// coinCreate("Ethereum", "ETH");
+// coinCreate("FTX Token", "FTT");
+// coinCreate("LINA", "LINA");
+// coinCreate("Polkadot", "DOT");
+// coinCreate("Tether", "USDT");
+// coinCreate("Binance Coin", "BNB");
+// coinCreate("Uniswap", "UNI");
+// coinCreate("Bitcoin Cash", "BCH");
+// coinCreate("Dogecoin", "DOGE");
+// coinCreate("TORN", "TRX");
+// coinCreate("EOS", "EOS");
+// coinCreate("Synthetix", "SNX");
+// coinCreate("Solana", "SOL");
 
 // mongoose.connection.close();
