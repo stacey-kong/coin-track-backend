@@ -44,7 +44,7 @@ calculateInterest = async function (amount, timeType, zoneType, rates) {
       break;
   }
 
-  let AccumulateRate=0;
+  let AccumulateRate = 0;
   rates.map((rate) => {
     if (rate.time > timestamp) {
       AccumulateRate += rate.rate;
@@ -56,59 +56,46 @@ calculateInterest = async function (amount, timeType, zoneType, rates) {
   return interest;
 };
 
-calculatePeriodInterest = async function (startTime, endTime) {
-  let AccumulateRate = await LendingRate.find({
-    time: { $gte: startTime, $lte: endTime },
-  }).then((rates) => {
-    let rate = 0;
-    for (i = 0; i < rates.length; i++) {
-      rate = rate + rates[i].rate;
+calculatePeriodInterest = async function (startTime, endTime, rates) {
+  let AccumulateRate = 0;
+  rates.map((rate) => {
+    if (rate.time >= startTime && rate.time <= endTime) {
+      AccumulateRate += rate.rate;
+    } else {
+      AccumulateRate += 0;
     }
-    return rate;
   });
   // console.log(`AccumulateRate:${AccumulateRate}`);
   return AccumulateRate;
 };
 
-calculateRecentDayInterest = async function (userId, timestamp, days) {
-  let now = new Date(timestamp);
-  let now_start_local = now.setHours(0, 0, 0, 0);
-  let realNow = new Date();
-  let day = realNow.getDay();
-  let realNowStart = realNow.setHours(0, 0, 0, 0) - (day - 1) * 8.64e7;
-  // console.log(`realNowStart:${realNowStart}`);
-  // console.log(`timestamp:${timestamp}`);
-  let totaldays = realNowStart === timestamp ? day : 7;
+exports.interestInWeeks = async function (amount, timestamp, coin) {
+  const lendingrate = interestRate.get(coin);
+  let now = new Date();
+  let today_start_local = now.setHours(0, 0, 0, 0);
+  let day = now.getDay();
+  let mon_of_this_week = today_start_local - (day - 1) * 8.64e7;
+  let totaldays = mon_of_this_week === timestamp ? day : 7;
+  let dayilyInterest = [];
 
-  // console.log(`totaldays:${totaldays}`);
+  for (let i = 0; i < totaldays; i++) {
+    let startTime = timestamp + i * 8.64e7;
+    // console.log(startTime);
+    let AccumulateRate = await calculatePeriodInterest(
+      startTime,
+      //23 hours in milliseconds 12:00 is regards as the new day begins
+      startTime + (8.64e7 - 3.6e6),
+      lendingrate
+    );
 
-  const dayilyInterest = await LendingAmount.findOne({ user: userId }).then(
-    async (res) => {
-      let amount = res.amount;
-      let interest = [];
+    let lendingInterest = {
+      x: startTime,
+      y: amount * AccumulateRate,
+    };
 
-      for (let i = 0; i < totaldays; i++) {
-        let startTime = now_start_local + i * 8.64e7;
-        // console.log(startTime);
-        let AccumulateRate = await calculatePeriodInterest(
-          startTime,
-          //23 hours in milliseconds 12:00 is regards as the new day begins
-          startTime + (8.64e7 - 3.6e6)
-        );
-
-        // let date = new Date(startTime);
-
-        let lendingInterest = {
-          x: startTime,
-          y: amount * AccumulateRate,
-        };
-
-        interest.push(lendingInterest);
-        // console.log(`interest:${interest}`)
-      }
-      return interest;
-    }
-  );
+    dayilyInterest.push(lendingInterest);
+    // console.log(`interest:${interest}`)
+  }
   return dayilyInterest;
 };
 

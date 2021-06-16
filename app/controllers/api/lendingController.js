@@ -1,32 +1,37 @@
 const LendingAmount = require("../../models/lendinginstance");
-const { interestSum } = require("../../helpers/interestCalculator");
+const {
+  interestSum,
+  interestInWeeks,
+} = require("../../helpers/interestCalculator");
 const { success, error } = require("../../helpers/responseApi");
 
-exports.reviseLendingAmount = async function (req, res) {
-  const { userId, Amount } = req.body;
+let lendingAmount = new Map();
 
+exports.reviseLendingAmount = async function (req, res) {
+  const { coin, userId, amount } = req.body;
   try {
     await LendingAmount.findOneAndUpdate(
       { user: userId },
-      { amount: Amount },
+      { amount: amount },
       (err, res) => {
         if (!res) {
           let LendingAmountDetails = {
             user: userId,
-            amount: Amount,
+            amount: amount,
           };
           let lendingAmount = new LendingAmount(LendingAmountDetails);
           lendingAmount.save();
         }
       }
     );
-    let interest = await insterestSum(Amount);
+    lendingAmount.set(userId, amount);
+    let interest = await interestSum(coin, amount, "UTC");
 
     return res.status(201).json(
       success(
         {
           data: {
-            Amount,
+            amount,
             interest,
           },
         },
@@ -45,6 +50,8 @@ exports.getLendingInfo = async function (req, res) {
     let amount = await LendingAmount.findOne({ user: userId }).then((res) => {
       return res.amount;
     });
+    lendingAmount.set(userId, amount);
+
     let interest = await interestSum(coin, amount, zoneType);
     console.log(interest);
 
@@ -53,6 +60,29 @@ exports.getLendingInfo = async function (req, res) {
         {
           data: {
             amount,
+            interest,
+          },
+        },
+        res.statusCode
+      )
+    );
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json(error("Server error", res.statusCode));
+  }
+};
+
+exports.getHistoryInterestSum = async function (req, res) {
+  const { coin, timestamp, userId } = req.body;
+  try {
+    let amount = lendingAmount.get(userId);
+
+    let interest = await interestInWeeks(+amount, timestamp, coin);
+
+    return res.status(201).json(
+      success(
+        {
+          data: {
             interest,
           },
         },
